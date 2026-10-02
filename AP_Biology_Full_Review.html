@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Biology — Full Review</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#172033;--muted:#667085;--blue:#315efb;--green:#16834b;--red:#c93636;--line:#dfe4ec}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:#172033;color:white;text-align:center;padding:25px 15px}header h1{margin:0 0 6px;font-size:clamp(1.5rem,4vw,2.3rem)}header p{margin:0;color:#ccd4e2}
+main{max-width:920px;margin:22px auto;padding:0 14px 40px}.top{display:flex;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.progress{height:10px;background:#dfe4ec;border-radius:20px;overflow:hidden;flex:1;min-width:230px}.bar{height:100%;background:var(--blue);width:0;transition:.2s}.score{font-weight:800}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:0 5px 20px #1720330b}
+.meta{font-size:.9rem;color:var(--blue);font-weight:800;margin-bottom:8px}.question{font-size:1.3rem;line-height:1.45;margin:0 0 20px}
+.choices{display:grid;gap:11px}.choice{border:1px solid var(--line);background:#fff;color:var(--ink);padding:14px 15px;border-radius:12px;text-align:left;font-size:1rem;cursor:pointer}.choice:hover:not(:disabled){border-color:var(--blue);background:#f7f9ff}.choice:disabled{cursor:default}.choice.correct{background:#eaf8f0;border-color:var(--green)}.choice.wrong{background:#fff0f0;border-color:var(--red)}
+.feedback{display:none;margin-top:16px;padding:14px;border-radius:12px;line-height:1.5}.feedback.show{display:block}.feedback.good{background:#eaf8f0;color:#0d6338}.feedback.bad{background:#fff0f0;color:#8f2222}
+.controls{display:flex;justify-content:space-between;gap:10px;margin-top:19px}.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:800;font-size:.97rem;cursor:pointer}.primary{background:var(--blue);color:#fff}.secondary{background:#e9edf4;color:var(--ink)}.btn:disabled{opacity:.45;cursor:not-allowed}
+#results{display:none;text-align:center}.big{font-size:3.1rem;font-weight:900}.review{text-align:left;margin-top:24px}.reviewitem{padding:13px 0;border-top:1px solid var(--line)}.wronglabel{color:var(--red);font-weight:800}
+.settings{margin-top:14px}.settings summary{cursor:pointer;font-weight:800}.settings p{color:var(--muted);line-height:1.5}.settings textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit}
+footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:15px}
+</style>
+</head>
+<body>
+<header>
+<h1>AP Biology — Full Review</h1>
+<p>Chapters 1–3 • 30 questions per round • unlimited rounds • randomized</p>
+</header>
+<main>
+<div id="quiz">
+  <div class="top"><div class="progress"><div class="bar" id="bar"></div></div><div class="score" id="score">0/0</div></div>
+  <section class="card">
+    <div class="meta" id="meta"></div>
+    <h2 class="question" id="q"></h2>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="controls">
+      <button class="btn secondary" onclick="startRound()">New Round</button>
+      <button class="btn primary" id="next" disabled>Next Question</button>
+    </div>
+  </section>
+</div>
+
+<section class="card" id="results">
+  <h2>Round Complete</h2>
+  <div class="big" id="final"></div>
+  <p id="message"></p>
+  <button class="btn primary" onclick="startRound()">Start Another 30</button>
+  <div class="review" id="review"></div>
+</section>
+
+<details class="card settings">
+<summary>Latin-term handout</summary>
+<p>The exact Latin terms #1–40 were not included in your message, so I did not invent them. Paste your handout below using one term per line. The site will save the list on this device and include those terms in future rounds.</p>
+<textarea id="latin" placeholder="Example format:
+1. term — meaning
+2. term — meaning
+...
+40. term — meaning"></textarea>
+<button class="btn secondary" onclick="saveLatin()">Save Latin Terms</button>
+<p id="saved"></p>
+</details>
+<footer>The question bank covers the biology concepts you listed. New rounds reshuffle questions and answer choices.</footer>
+</main>
+
+<script>
+const Q = [
+/* CHAPTER 1 */
+["Ch. 1 — Life","What does the anthropic principle generally address?",["Why the universe appears compatible with the existence of observers","How plants make glucose","How cells divide","How DNA is replicated"],0,"The anthropic principle concerns the relationship between the observed universe and the conditions that permit observers to exist."],
+["Ch. 1 — Life","Which is NOT one of the commonly taught characteristics of life?",["Order/organization","Response to stimuli","Reproduction","Ability to live forever"],3,"Living things have characteristics such as organization, metabolism, homeostasis, growth/development, response, reproduction, and adaptation/evolution."],
+["Ch. 1 — Organization","Which sequence correctly goes from smallest to largest biological organization?",["Organ → tissue → cell → molecule","Atom → molecule → cell → tissue → organ → organ system → organism","Cell → atom → organ → tissue","Molecule → atom → organism → cell"],1,"The listed sequence is atom, molecule, cell, tissue, organ, organ system, organism."],
+["Ch. 1 — Ecology","Which sequence correctly represents ecological organization from smaller to larger?",["Population → community → ecosystem → biosphere","Community → population → biosphere → ecosystem","Ecosystem → population → community → biosphere","Biosphere → ecosystem → community → population"],0,"Population, community, ecosystem, and biosphere are the four ecological levels in increasing scale."],
+["Ch. 1 — Organization","Why is it useful to study multiple levels of biological organization?",["Because processes at one level can affect and explain processes at other levels","Because atoms are more important than ecosystems","Because ecosystems contain no organisms","Because only organisms can be studied scientifically"],0,"Biology connects molecular, cellular, organismal, population, community, ecosystem, and biosphere processes."],
+["Ch. 1 — Domains","Which three domains are used to classify all cellular life?",["Animalia, Plantae, Fungi","Bacteria, Archaea, Eukarya","Protista, Fungi, Plantae","Bacteria, Plants, Animals"],1,"The three domains are Bacteria, Archaea, and Eukarya."],
+["Ch. 1 — Domains","Which statement correctly describes Bacteria?",["They are prokaryotic cells without a membrane-bound nucleus","They are all multicellular","They have membrane-bound nuclei","They are all photosynthetic"],0,"Bacteria are prokaryotes and lack a membrane-bound nucleus."],
+["Ch. 1 — Domains","Which statement is characteristic of Archaea?",["They are prokaryotes and have distinctive membrane/cell-wall chemistry","They are always multicellular","They have chloroplasts","They belong to Eukarya"],0,"Archaea are prokaryotic but have molecular and biochemical features distinct from Bacteria."],
+["Ch. 1 — Cells","What is a prokaryote?",["A cell lacking a membrane-bound nucleus","A cell containing a nucleus and mitochondria","A multicellular organism","A virus"],0,"Prokaryotes lack a membrane-bound nucleus."],
+["Ch. 1 — Cells","What is a eukaryote?",["A cell with a membrane-bound nucleus","A cell with no DNA","A cell that must be unicellular","A virus"],0,"Eukaryotic cells have a membrane-bound nucleus and other membrane-bound organelles."],
+["Ch. 1 — Groups","Which four major groups are commonly taught within Eukarya?",["Animals, plants, fungi, protists","Bacteria, Archaea, fungi, plants","Viruses, bacteria, animals, plants","Animals, archaea, bacteria, fungi"],0,"The four broad eukaryotic groups commonly taught are animals, plants, fungi, and protists."],
+["Ch. 1 — Groups","Which two major prokaryotic groups correspond to the three-domain system?",["Bacteria and Archaea","Animals and plants","Fungi and protists","Bacteria and Eukarya"],0,"Bacteria and Archaea are the two prokaryotic domains."],
+["Ch. 1 — Photosynthesis","What is the word equation for photosynthesis?",["Carbon dioxide + water + light → glucose + oxygen","Glucose + oxygen → carbon dioxide + water","Protein + water → amino acids","Oxygen + nitrogen → glucose"],0,"Photosynthesis uses carbon dioxide and water with light energy to produce glucose and oxygen."],
+["Ch. 1 — Photosynthesis","Which balanced equation represents photosynthesis?",["6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂","C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O","CO₂ + O₂ → glucose","6CO₂ + O₂ → C₆H₁₂O₆"],0,"The balanced photosynthesis equation is 6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂."],
+["Ch. 1 — Respiration","What is the word equation for cellular respiration?",["Glucose + oxygen → carbon dioxide + water + ATP","Carbon dioxide + water → glucose + oxygen","Protein → DNA + ATP","Oxygen + water → glucose"],0,"Aerobic cellular respiration breaks down glucose using oxygen and produces carbon dioxide, water, and usable cellular energy."],
+["Ch. 1 — Respiration","Which balanced equation represents aerobic cellular respiration?",["C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + energy","6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂","C₆H₁₂O₆ + O₂ → CO₂","CO₂ + H₂O → ATP"],0,"The balanced equation is C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + energy."],
+["Ch. 1 — Energy","What is an autotroph/producer?",["An organism that makes organic food from inorganic sources using an energy source","An organism that must eat another organism","An organism that cannot use energy","A decomposer only"],0,"Autotrophs make organic molecules from inorganic materials; producers form the base of food webs."],
+["Ch. 1 — Energy","What is a heterotroph/consumer?",["An organism that obtains organic nutrients by consuming or absorbing them from other organisms","An organism that always performs photosynthesis","An organism that makes all food from CO₂","An organism without DNA"],0,"Heterotrophs obtain organic molecules from other organisms or organic matter."],
+["Ch. 1 — Biodiversity","What generally happens to ecosystem stability and resilience as biodiversity increases?",["There can be greater functional redundancy and resilience","All ecosystems become identical","Energy flow stops","Every species becomes extinct"],0,"Higher biodiversity can provide more ecological roles and redundancy, which can increase resilience to disturbances."],
+["Ch. 1 — Biodiversity","What can happen when biodiversity is severely disrupted?",["Food webs and ecosystem functions can become less stable","Every population immediately doubles","Photosynthesis stops worldwide","All organisms become producers"],0,"Loss of biodiversity can disrupt food webs, nutrient cycling, pollination, decomposition, and other ecosystem services."],
+["Ch. 1 — Taxonomy","Which is the correct taxonomic hierarchy from broadest to most specific?",["Domain, Kingdom, Phylum, Class, Order, Family, Genus, Species","Species, Genus, Family, Order, Class, Phylum, Kingdom, Domain","Kingdom, Domain, Species, Genus, Class, Family, Order, Phylum","Domain, Species, Kingdom, Family, Genus, Order, Class, Phylum"],0,"The standard eight ranks are Domain → Kingdom → Phylum → Class → Order → Family → Genus → Species."],
+["Ch. 1 — Scientific Method","Which is a reasonable sequence for solving a problem scientifically?",["Question/observation → hypothesis → test/experiment → analyze data → conclusion/communicate","Conclusion → hypothesis → question → data","Experiment → guess → ignore data → conclusion","Observation → answer → delete data"],0,"A scientific investigation begins with observations/questions, develops a testable hypothesis, gathers data, analyzes it, and draws conclusions."],
+["Ch. 1 — Hypothesis","Which is a general hypothesis?",["If fertilizer amount increases, then plant growth will increase because nutrients can limit growth.","There is no relationship between fertilizer and plant growth.","Plants are green.","Fertilizer is a chemical."],0,"A hypothesis is a testable explanation/prediction that connects variables."],
+["Ch. 1 — Hypothesis","What is a null hypothesis?",["A statement that there is no effect or relationship between the variables being tested","A statement that always predicts a positive result","A statement that cannot be tested","The final conclusion"],0,"The null hypothesis generally states that the treatment has no effect or that no relationship exists."],
+["Ch. 1 — Variables","In an experiment testing how fertilizer amount affects plant height, what is the independent variable?",["Amount of fertilizer","Plant height","Type of ruler","Number of leaves measured"],0,"The independent variable is what the investigator deliberately changes."],
+["Ch. 1 — Variables","In the same fertilizer experiment, what is the dependent variable?",["Plant height","Amount of fertilizer","Brand of pot","Time of day"],0,"The dependent variable is the measured response."],
+["Ch. 1 — Controls","What is a constant in an experiment?",["A condition kept the same for all experimental groups","The variable deliberately changed","The measured result","A random error"],0,"Constants/control variables are held consistent so the independent variable can be isolated."],
+["Ch. 1 — Controls","Why is a control group useful?",["It provides a comparison that helps show whether the treatment caused the observed effect","It guarantees the hypothesis is correct","It eliminates every source of error","It makes replication unnecessary"],0,"A control gives researchers a baseline for comparison."],
+["Ch. 1 — Theory","Which best describes a scientific theory?",["A well-supported explanatory framework backed by extensive evidence","A guess with no evidence","A personal opinion","A hypothesis that can never be tested"],0,"Scientific theories are broad explanations supported by substantial evidence and repeated testing."],
+["Ch. 1 — Whales","How can whales influence climate and ocean ecosystems?",["Their feeding, movement, waste, and nutrient transport can affect ocean nutrient cycling and carbon processes","They create all atmospheric oxygen","They eliminate phytoplankton","They stop ocean currents"],0,"Whales can redistribute nutrients through feeding and waste and influence marine food webs; links to climate involve complex carbon and nutrient processes."],
+
+/* CHAPTER 2 */
+["Ch. 2 — Atoms","Why does electron sharing matter biologically?",["Electron arrangement and sharing determine chemical bonds, molecular shape, polarity, and reactivity","Electrons determine only an organism's size","Electrons have no role in chemistry","Only neutrons form biological bonds"],0,"How electrons are distributed determines how atoms bond and therefore the structure and behavior of biomolecules."],
+["Ch. 2 — Atomic Structure","What does atomic number tell you?",["The number of protons in an atom's nucleus","The number of neutrons only","The number of bonds","The mass of one electron"],0,"Atomic number equals the number of protons."],
+["Ch. 2 — Atomic Structure","What is the mass number of an isotope?",["Protons + neutrons","Protons + electrons","Neutrons + electrons","Electrons only"],0,"Mass number is the total number of protons and neutrons."],
+["Ch. 2 — Isotopes","What makes two atoms isotopes of the same element?",["They have the same number of protons but different numbers of neutrons","They have different numbers of protons","They have different atomic numbers","They have no electrons"],0,"Isotopes share the same atomic number but differ in neutron number."],
+["Ch. 2 — Ions","What is an ion?",["An atom or molecule with a net electrical charge from gaining or losing electrons","An atom with extra neutrons only","A molecule with no protons","A neutral isotope"],0,"Electron gain produces a negative ion; electron loss produces a positive ion."],
+["Ch. 2 — Bonds","What is an ionic bond?",["Electrostatic attraction between oppositely charged ions after electron transfer","Sharing electrons equally","A weak attraction between all molecules","A bond found only in DNA"],0,"Ionic bonding results from attraction between positive and negative ions."],
+["Ch. 2 — Bonds","What is a covalent bond?",["A bond in which atoms share electrons","A bond caused only by neutron transfer","A bond between ions with no electrons","A bond that exists only in water"],0,"Covalent bonds involve shared electron pairs."],
+["Ch. 2 — Bonds","What is a polar covalent bond?",["A covalent bond in which electrons are shared unequally","A bond with no electrons","A bond where electrons are always shared equally","An ionic bond"],0,"Differences in electronegativity can make covalent electron sharing unequal."],
+["Ch. 2 — Bonds","What is a hydrogen bond?",["A relatively weak attraction involving a partially positive hydrogen and an electronegative atom","A strong covalent bond between two hydrogen atoms","An ionic bond in salt","A bond that always requires DNA"],0,"Hydrogen bonds are attractions between partial charges, commonly involving H bonded to O, N, or F."],
+["Ch. 2 — Electronegativity","What does electronegativity describe?",["An atom's tendency to attract shared electrons","An atom's number of neutrons","The mass of a molecule","The speed of a reaction"],0,"Electronegativity is the tendency of an atom to attract bonding electrons."],
+["Ch. 2 — Water","Cohesion refers to:",["Attraction between molecules of the same substance, such as water-water attraction","Attraction between water and glass only","Breaking water molecules","Water becoming nonpolar"],0,"Cohesion is attraction among like molecules and contributes to surface tension."],
+["Ch. 2 — Water","Adhesion refers to:",["Attraction between different substances, such as water and glass","Water-water attraction only","The splitting of water","The removal of hydrogen bonds"],0,"Adhesion is attraction between unlike substances."],
+["Ch. 2 — Water","Which substance is hydrophilic?",["A polar or charged substance that interacts readily with water","A nonpolar hydrocarbon","A molecule that always repels water","A substance with no chemical bonds"],0,"Hydrophilic substances interact favorably with polar water."],
+["Ch. 2 — Water","Which substance is hydrophobic?",["A largely nonpolar substance that does not interact favorably with water","A salt ion","A strongly polar molecule","A charged phosphate"],0,"Hydrophobic substances are generally nonpolar and avoid interactions with water."],
+["Ch. 2 — Solutions","In a saltwater solution, what is the solvent?",["Water","Salt","Sodium only","Chloride only"],0,"The solvent is the substance that does the dissolving; in saltwater, water is the solvent."],
+["Ch. 2 — Solutions","In a saltwater solution, what is the solute?",["The dissolved salt","Water","The container","Oxygen"],0,"The solute is the substance dissolved in the solvent."],
+["Ch. 2 — Acids/Bases","A substance with pH 3 is:",["Acidic","Basic","Neutral","Always a salt"],0,"pH below 7 is acidic at ordinary aqueous conditions."],
+["Ch. 2 — Acids/Bases","A substance with pH 11 is:",["Basic","Acidic","Neutral","A pure acid"],0,"pH above 7 is basic."],
+["Ch. 2 — pH","Compared with pH 5, a solution at pH 3 has approximately:",["100 times greater hydrogen-ion concentration","2 times greater hydrogen-ion concentration","100 times less hydrogen-ion concentration","The same concentration"],0,"Each pH unit represents a tenfold change in hydrogen-ion concentration, so two units means 100-fold."],
+["Ch. 2 — Salts","What is a salt in chemistry?",["An ionic compound formed from positive and negative ions","Any sugar dissolved in water","Only table sugar","A covalent hydrocarbon"],0,"Salts are ionic compounds composed of cations and anions."],
+["Ch. 2 — Water","Which property of water helps organisms maintain relatively stable temperatures?",["High specific heat","Low polarity","Hydrophobicity","Lack of hydrogen bonding"],0,"Water's high specific heat lets it absorb substantial heat with relatively small temperature change."],
+["Ch. 2 — Water","Why does ice float on liquid water?",["Hydrogen bonding creates a more open structure in ice, making it less dense","Ice contains no hydrogen","Ice is more dense than water","Covalent bonds disappear in ice"],0,"The crystal structure of ice spaces water molecules farther apart than in liquid water."],
+["Ch. 2 — Water","Why is water a good solvent for many biological substances?",["Its polarity allows it to surround and interact with ions and other polar molecules","It is nonpolar","It has no electrons","It dissolves every substance"],0,"Water's polarity makes it effective at dissolving many ionic and polar compounds."],
+["Ch. 2 — Radioactivity","What is a radioisotope?",["An isotope with an unstable nucleus that undergoes radioactive decay","A stable isotope with no neutrons","A charged electron","A type of carbohydrate"],0,"Radioisotopes have unstable nuclei and spontaneously decay."],
+["Ch. 2 — Tracers","Why are radioactive isotopes useful as tracers?",["Their detectable emissions allow scientists to follow where labeled atoms go","They cannot be detected","They stop all chemical reactions","They always remain radioactive forever"],0,"Radiation can provide a detectable signal for following a labeled substance through a biological process."],
+["Ch. 2 — Half-life","What does half-life mean?",["The time required for half of a radioactive sample's unstable nuclei to decay","The time for all radioactivity to disappear","The time for an isotope to gain an electron","The age of a cell"],0,"After one half-life, approximately half of the original radioactive nuclei remain undecayed."],
+["Ch. 2 — Half-life","Why does half-life matter when choosing a tracer?",["It affects how long the tracer remains detectable and how much radiation is delivered","It determines the atomic number","It tells you the isotope's color","It guarantees no decay"],0,"A useful tracer should have a half-life suited to the duration of the study and the desired detectability."],
+["Ch. 2 — Free Radicals","What is a free radical?",["A highly reactive species with an unpaired electron","A stable noble gas","A type of vitamin","A molecule with no electrons"],0,"Unpaired electrons can make free radicals highly reactive."],
+["Ch. 2 — Oxidative Stress","What is oxidative stress?",["A condition in which reactive species overwhelm antioxidant defenses and cause molecular damage","A lack of oxygen in every cell","The normal formation of ATP only","A type of cell division"],0,"Oxidative stress occurs when reactive species and antioxidant defenses become imbalanced."],
+["Ch. 2 — Cell Damage","Which three broad types of cellular molecules can oxidative stress damage?",["Lipids, proteins, and nucleic acids","Only water","Only sodium","Only ATP"],0,"Reactive species can damage membrane lipids, proteins, and DNA/RNA."],
+["Ch. 2 — Free Radicals","Which is an example of a normal beneficial role for reactive species?",["They can participate in immune defense and cell signaling","They are always harmless","They replace DNA","They eliminate all oxygen"],0,"Reactive species can be produced intentionally in immune responses and can function in signaling; excess is harmful."],
+["Ch. 2 — Microscope","Which microscope part holds the objective lenses and rotates to change magnification?",["Revolving nosepiece","Stage","Eyepiece","Diaphragm"],0,"The revolving nosepiece holds and rotates objective lenses."],
+["Ch. 2 — Microscope","What does the diaphragm primarily control?",["The amount of light passing through the specimen","The microscope's total weight","The objective lens magnification","The slide's chemical composition"],0,"The diaphragm controls illumination reaching the specimen."],
+["Ch. 2 — Microscope","Which knob is primarily used for large initial focusing?",["Coarse adjustment knob","Fine adjustment knob","Diaphragm","Nosepiece"],0,"The coarse adjustment moves the stage/objectives more substantially for initial focus."],
+["Ch. 2 — Microscope","Which knob is used to sharpen focus after coarse focusing?",["Fine adjustment knob","Coarse adjustment knob","Stage clip","Arm"],0,"Fine adjustment makes small focus changes for a sharper image."],
+
+/* CHAPTER 3 */
+["Ch. 3 — Macromolecules","What are the four major biological macromolecule groups?",["Carbohydrates, lipids, proteins, nucleic acids","Water, minerals, vitamins, salts","DNA, ATP, water, oxygen","Glucose, amino acids, sodium, calcium"],0,"The four major classes are carbohydrates, lipids, proteins, and nucleic acids."],
+["Ch. 3 — Vocabulary","What is an organic molecule in the biological sense?",["A carbon-based molecule, generally associated with C-H bonds and carbon frameworks","Any molecule made only of oxygen","A molecule containing no carbon","Only a molecule made by plants"],0,"Biological organic chemistry centers on carbon-containing molecules, especially those with carbon-hydrogen frameworks."],
+["Ch. 3 — Vocabulary","What is a hydrocarbon?",["A molecule composed only of carbon and hydrogen","A molecule composed only of oxygen","A protein","A nucleotide"],0,"Hydrocarbons contain only carbon and hydrogen."],
+["Ch. 3 — Vocabulary","What is a monomer?",["A small building-block molecule that can be joined into a larger polymer","A complete ecosystem","A type of isotope","A functional group only"],0,"Monomers are smaller units that can be linked into polymers."],
+["Ch. 3 — Vocabulary","What is a polymer?",["A large molecule made of repeating or linked smaller units","A single atom","A salt ion","A microscope part"],0,"Many biological polymers are chains of monomers."],
+["Ch. 3 — Vocabulary","What does metabolism refer to?",["The network of chemical reactions occurring in an organism","Only digestion","Only breathing","Only DNA replication"],0,"Metabolism includes the chemical reactions that build, break down, and transform molecules in cells."],
+["Ch. 3 — Monomers","What is the basic monomer of proteins?",["Amino acid","Nucleotide","Monosaccharide","Fatty acid"],0,"Proteins are polymers of amino acids."],
+["Ch. 3 — Monomers","What is the monomer of nucleic acids?",["Nucleotide","Amino acid","Monosaccharide","Glycerol"],0,"DNA and RNA are polymers of nucleotides."],
+["Ch. 3 — Monomers","What is the monomer/building unit of carbohydrates?",["Monosaccharide","Amino acid","Nucleotide","Steroid"],0,"Carbohydrates can be assembled from monosaccharides."],
+["Ch. 3 — Condensation","What happens in a condensation/dehydration reaction?",["Smaller molecules join while water is removed","A polymer is split by adding water","Electrons disappear","All bonds are broken"],0,"Condensation removes water as a covalent bond forms."],
+["Ch. 3 — Hydrolysis","What happens in hydrolysis?",["Water is added to help break a covalent bond","Water is removed to build a polymer","Oxygen becomes carbon","A molecule becomes an isotope"],0,"Hydrolysis uses water to break bonds, commonly during digestion."],
+["Ch. 3 — Ketones","Why can the body produce ketone bodies?",["During low carbohydrate availability, the liver can make them from fat-derived molecules as an alternative fuel","They are made only after eating sugar","They replace DNA","They are a type of amino acid"],0,"Ketone bodies can provide an alternative fuel source when carbohydrate availability and insulin signaling are low."],
+["Ch. 3 — Ketones","Why can ketones be useful to the brain?",["The brain can use ketone bodies as an alternative fuel during prolonged carbohydrate restriction or fasting","The brain cannot use glucose","Ketones are neurotransmitters","They replace oxygen"],0,"During prolonged fasting, the brain can use ketones as an alternative energy source."],
+["Ch. 3 — Ketones","Why can very high ketone levels be dangerous in some conditions?",["Excessive ketone production can contribute to dangerous metabolic acidosis, especially in untreated type 1 diabetes","Ketones always increase blood pH","Ketones are always harmless","Ketones stop breathing"],0,"Very high ketones can acidify blood and are especially dangerous during diabetic ketoacidosis."],
+["Ch. 3 — Brain","What does BDNF stand for?",["Brain-derived neurotrophic factor","Blood-derived nutrient factor","Biological DNA nutrient fragment","Brain dopamine nuclear factor"],0,"BDNF stands for brain-derived neurotrophic factor."],
+["Ch. 3 — Brain","What is BDNF associated with?",["Neuronal survival, growth/plasticity, learning, and memory","Breaking down cellulose","Making bile","Blood clotting only"],0,"BDNF is a neurotrophin involved in neuronal health and plasticity and is associated with learning and memory."],
+["Ch. 3 — Metabolism","What is a metabolic switch?",["A shift in which fuels and metabolic pathways the body preferentially uses","A literal electrical switch in a cell","A change from DNA to RNA","A microscope setting"],0,"Metabolic switching can refer to shifting between carbohydrate-focused and fat/ketone-focused metabolism depending on energy availability and hormones."],
+["Ch. 3 — Carbohydrates","What is starch?",["A plant storage polysaccharide made of glucose units","An animal storage polysaccharide","A protein","A lipid"],0,"Plants store glucose largely as starch."],
+["Ch. 3 — Carbohydrates","What is cellulose?",["A structural glucose polymer in plant cell walls","An animal storage polymer","A protein enzyme","A steroid"],0,"Cellulose is a major structural component of plant cell walls."],
+["Ch. 3 — Carbohydrates","What is chitin?",["A structural polysaccharide found in arthropod exoskeletons and fungal cell walls","A plant storage sugar","A steroid hormone","A nucleic acid"],0,"Chitin is a structural polysaccharide."],
+["Ch. 3 — Fasting","What can intermittent fasting change metabolically?",["It can increase periods in which stored fuels and fat oxidation are used and may increase ketone production","It makes photosynthesis occur in humans","It eliminates all metabolism","It converts protein directly into DNA"],0,"During fasting, insulin tends to fall and stored fuels become more important; longer fasts can increase ketone production."],
+["Ch. 3 — Functional Groups","Which functional group is —CH₃?",["Methyl","Hydroxyl","Amino","Phosphate"],0,"The methyl group is —CH₃."],
+["Ch. 3 — Functional Groups","Which functional group is —OH?",["Hydroxyl","Methyl","Amide","Sulfhydryl"],0,"Hydroxyl groups are —OH and increase polarity in many molecules."],
+["Ch. 3 — Functional Groups","Which functional group contains a carbonyl at the end of a carbon chain and is characteristic of aldehydes?",["Aldehyde","Amine","Phosphate","Sulfhydryl"],0,"An aldehyde has a terminal carbonyl carbon bonded to hydrogen."],
+["Ch. 3 — Functional Groups","Which functional group is characteristic of ketones?",["A carbonyl within a carbon chain","A terminal —OH only","A phosphate only","A sulfur-hydrogen group"],0,"A ketone contains a carbonyl carbon bonded to two carbon groups."],
+["Ch. 3 — Functional Groups","Which functional group is —COOH?",["Carboxyl","Amino","Methyl","Phosphate"],0,"The carboxyl group contains C=O and —OH."],
+["Ch. 3 — Functional Groups","What is a carbonyl group?",["A carbon double-bonded to oxygen (C=O)","An —OH group","An —NH₂ group","A sulfur-hydrogen group"],0,"Carbonyl refers specifically to the C=O functional group."],
+["Ch. 3 — Functional Groups","Which functional group is —NH₂?",["Amine","Carboxyl","Methyl","Acetyl"],0,"An amino/amine group contains nitrogen; a common representation is —NH₂."],
+["Ch. 3 — Functional Groups","Which functional group contains a carbonyl attached to nitrogen?",["Amide","Hydroxyl","Methyl","Sulfhydryl"],0,"Amides contain a carbonyl group directly bonded to nitrogen."],
+["Ch. 3 — Functional Groups","An acetyl group is best represented as:",["CH₃CO—","—OH","—NH₂","—SH"],0,"An acetyl group is CH₃CO—, derived from acetic acid."],
+["Ch. 3 — Functional Groups","Which functional group contains phosphorus and oxygen and is central to ATP?",["Phosphate","Methyl","Hydroxyl","Amide"],0,"Phosphate groups are central to ATP and nucleic-acid backbones."],
+["Ch. 3 — Functional Groups","Which functional group is —SH?",["Sulfhydryl","Hydroxyl","Amine","Carbonyl"],0,"Sulfhydryl groups contain sulfur bonded to hydrogen and occur in cysteine."],
+["Ch. 3 — Sugars","What allows a sugar to behave as a reducing sugar?",["It has a reactive free anomeric carbon that can open to a carbonyl-containing form","It contains no oxygen","It is always a disaccharide","It must be nonpolar"],0,"A free anomeric center can allow the sugar to form an open-chain carbonyl form that participates in reducing reactions."],
+["Ch. 3 — Sugars","Which is a common reducing sugar?",["Glucose","Sucrose","Cholesterol","Glycerol"],0,"Glucose is a common reducing sugar."],
+["Ch. 3 — Sugars","Which common disaccharide is non-reducing?",["Sucrose","Glucose","Fructose","Galactose"],0,"Sucrose's glycosidic bond ties up both anomeric carbons, making it non-reducing."],
+["Ch. 3 — Maillard","What reactants drive the Maillard reaction?",["Reducing sugars and amino groups/compounds containing amino groups","Water and oxygen only","Fatty acids and phosphate only","DNA and RNA"],0,"The Maillard reaction involves reducing sugars reacting with amino groups, especially during heating."],
+["Ch. 3 — Maillard","What does the Maillard reaction contribute to when cooking food?",["Browning and many characteristic roasted/cooked flavors and aromas","Photosynthesis","DNA replication","Fat digestion"],0,"Maillard chemistry creates many brown pigments and flavor/aroma compounds during cooking."],
+["Ch. 3 — Fruit","Why can whole fruit be preferable to fruit juice?",["Whole fruit retains fiber and generally produces slower digestion/absorption and greater satiety","Juice contains more fiber than whole fruit","Whole fruit contains no sugars","Juice cannot contain glucose"],0,"Whole fruit keeps its fiber and structure, which can slow intake and absorption and improve satiety compared with juice."],
+["Ch. 3 — Sugar","Why can highly sweet foods be especially rewarding?",["Sweet taste activates reward pathways, and highly concentrated sugars can be easy to consume quickly","Sugar is the only nutrient cells can use","Broccoli contains no nutrients","Sweetness prevents insulin release"],0,"Sweet taste engages reward circuitry; palatable, energy-dense foods can reinforce repeated consumption."],
+["Ch. 3 — Fats","What is a saturated fatty acid?",["A fatty acid with no carbon-carbon double bonds","A fatty acid with exactly one double bond","A fatty acid with two or more double bonds","A fatty acid with no carbon"],0,"Saturated fatty acids contain no C=C double bonds."],
+["Ch. 3 — Fats","What is a monounsaturated fatty acid?",["A fatty acid with one carbon-carbon double bond","A fatty acid with no double bonds","A fatty acid with many double bonds","A carbohydrate"],0,"Mono-unsaturated means one C=C double bond."],
+["Ch. 3 — Fats","What is a polyunsaturated fatty acid?",["A fatty acid with two or more carbon-carbon double bonds","A fatty acid with no double bonds","A protein","A steroid only"],0,"Polyunsaturated fatty acids contain multiple C=C double bonds."],
+["Ch. 3 — Fats","What does a cis double bond usually do to a fatty acid chain?",["Creates a bend or kink","Makes it perfectly straight","Removes all hydrogen","Turns it into a carbohydrate"],0,"Cis double bonds introduce a bend in the hydrocarbon chain."],
+["Ch. 3 — Fats","What is a trans fat?",["An unsaturated fat containing at least one trans-configured double bond","Any saturated fat","A carbohydrate","A protein"],0,"Trans fats contain trans-configured carbon-carbon double bonds."],
+["Ch. 3 — Fats","How can industrial trans fats historically be produced?",["Partial hydrogenation of unsaturated oils can create trans double bonds","Complete hydrolysis of proteins","Adding water to glucose","Removing all carbon"],0,"Partial hydrogenation can rearrange some cis double bonds into trans configurations."],
+["Ch. 3 — Fats","Why are industrial trans fats considered harmful?",["They can raise LDL, lower HDL, and increase cardiovascular disease risk","They always lower LDL","They are essential fatty acids","They improve every blood lipid measure"],0,"Trans fats have unfavorable effects on blood lipids and cardiovascular risk."],
+["Ch. 3 — Atherosclerosis","What is atherosclerosis?",["A disease process involving plaque buildup in artery walls","A breakdown of glycogen","A type of diabetes","A lung infection"],0,"Atherosclerosis involves accumulation of lipid-rich plaques and other material in arterial walls."],
+["Ch. 3 — Atherosclerosis","What can arterial plaque do?",["Narrow arteries and contribute to reduced blood flow and cardiovascular events","Increase artery diameter indefinitely","Turn blood into glucose","Eliminate cholesterol"],0,"Plaque can narrow arteries and contribute to thrombosis, heart attack, or stroke."],
+["Ch. 3 — Omega-3","Why are omega-3 fatty acids important?",["Some are essential dietary fatty acids and are used in membranes and signaling molecules","They are all saturated fats","They replace all carbohydrates","They are only used for digestion"],0,"Certain omega-3s must come from the diet and contribute to membrane structure and signaling."],
+["Ch. 3 — Steroids","What is a steroid?",["A lipid with a characteristic four-ring carbon skeleton","A carbohydrate polymer","A nucleotide","A protein made of amino acids"],0,"Steroids are lipids characterized by four fused carbon rings."],
+["Ch. 3 — Steroids","What are corticosteroids?",["Steroid hormones produced by the adrenal cortex, including glucocorticoids and mineralocorticoids","Digestive enzymes","Plant polysaccharides","Nucleic acids"],0,"Corticosteroids are adrenal cortex hormones with roles in metabolism, immune response, and electrolyte balance."],
+["Ch. 3 — Steroids","What are anabolic steroids?",["Synthetic or natural androgen-related steroids that promote anabolic processes; some are medically used but misuse has risks","Carbohydrates used for energy","Antibodies","Fatty acids only"],0,"Anabolic-androgenic steroids can increase protein synthesis and tissue growth; nonmedical use carries significant risks."],
+["Ch. 3 — Cholesterol","What is LDL?",["A lipoprotein particle that transports cholesterol and other lipids, including from liver toward tissues","A digestive enzyme","A hormone","A carbohydrate"],0,"LDL is a lipoprotein particle involved in delivering cholesterol to tissues; elevated LDL is associated with cardiovascular risk."],
+["Ch. 3 — Cholesterol","What is HDL?",["A lipoprotein involved in reverse cholesterol transport and other lipid transport","A type of glucose","A digestive enzyme","A polysaccharide"],0,"HDL participates in moving cholesterol toward the liver for processing and excretion."],
+["Ch. 3 — Lipoproteins","What is a lipoprotein?",["A particle made of lipids and proteins that transports hydrophobic lipids through blood and lymph","A carbohydrate polymer","A DNA strand","A cell organelle"],0,"Lipoproteins package hydrophobic lipids so they can travel through aqueous body fluids."],
+["Ch. 3 — Fat Digestion","What is the role of bile salts in fat digestion?",["They emulsify large fat droplets into smaller droplets, increasing surface area for lipase","They digest proteins directly","They make glucose","They destroy all fatty acids"],0,"Bile salts help emulsify fats and form micelles, facilitating digestion and absorption."],
+["Ch. 3 — Fat Digestion","Where is bile stored before release into the small intestine?",["Gallbladder","Pancreas","Stomach","Large intestine"],0,"The gallbladder stores and concentrates bile produced by the liver."],
+["Ch. 3 — Fat Digestion","What is a micelle?",["A small structure formed with bile salts that helps ferry lipid digestion products through the watery intestinal environment","A protein enzyme","A DNA molecule","A blood cell"],0,"Micelles help solubilize fatty acids and other lipid digestion products near the intestinal surface."],
+["Ch. 3 — Fat Digestion","Which organ releases pancreatic lipase into the small intestine?",["Pancreas","Gallbladder","Liver only","Kidney"],0,"The pancreas secretes lipase and other digestive enzymes into the small intestine."],
+["Ch. 3 — Fat Digestion","What does lipase do?",["Hydrolyzes triglycerides into fatty acids and monoacylglycerols","Builds DNA","Produces bile salts","Makes glucose from CO₂"],0,"Lipases hydrolyze ester bonds in triglycerides during fat digestion."],
+["Ch. 3 — Fat Absorption","After intestinal lipid products enter enterocytes, what commonly happens before they leave as chylomicrons?",["They are reassembled into triglycerides and packaged with proteins into chylomicrons","They become DNA","They are converted into cellulose","They are exhaled"],0,"Fatty acids and monoacylglycerols are commonly re-esterified and packaged into chylomicrons."],
+["Ch. 3 — Fat Absorption","Why do chylomicrons initially enter the lymphatic system?",["They are large lipid-rich particles that enter intestinal lymphatic lacteals before reaching the bloodstream","They are too small for blood","The lymph system digests them","They are made of DNA"],0,"Chylomicrons enter lymphatic lacteals and later enter the bloodstream."],
+["Ch. 3 — Fat Transport","What do lipoprotein lipases do?",["Hydrolyze triglycerides in circulating lipoproteins so fatty acids can enter tissues","Build proteins from amino acids","Make bile in the gallbladder","Destroy cholesterol"],0,"Lipoprotein lipase releases fatty acids from triglyceride-rich lipoproteins for tissue uptake."],
+["Ch. 3 — Diabetes","What does insulin generally do after blood glucose rises?",["Promotes glucose uptake/storage and generally lowers blood glucose","Raises blood glucose by breaking down glycogen only","Stops all glucose use","Converts glucose into oxygen"],0,"Insulin promotes glucose uptake and storage, including glycogen synthesis, and generally lowers blood glucose."],
+["Ch. 3 — Diabetes","What does glucagon generally do when blood glucose is low?",["Promotes processes such as glycogen breakdown that raise blood glucose","Promotes glycogen storage only","Stops liver metabolism","Makes glucose disappear"],0,"Glucagon signals the liver to mobilize stored fuels and raise blood glucose."],
+["Ch. 3 — Diabetes","What is glycogen?",["A glucose storage polysaccharide in animals","A plant cell-wall polymer","A steroid","A protein hormone"],0,"Animals store glucose primarily as glycogen, especially in liver and skeletal muscle."],
+["Ch. 3 — Diabetes","What characterizes type 1 diabetes?",["Autoimmune destruction of pancreatic beta cells causes little or no endogenous insulin production","Only temporary high blood sugar after meals","It is caused by eating fruit","It always disappears with exercise"],0,"Type 1 diabetes results from autoimmune destruction of insulin-producing beta cells and requires insulin replacement."],
+["Ch. 3 — Diabetes","What characterizes type 2 diabetes?",["Insulin resistance with progressive beta-cell dysfunction and inadequate insulin relative to need","Complete absence of all glucagon","A disease caused by lack of DNA","Only an infection"],0,"Type 2 diabetes commonly involves insulin resistance and eventual impaired insulin secretion."],
+["Ch. 3 — Diabetes","What is gestational diabetes?",["Diabetes first diagnosed during pregnancy that can increase health risks for parent and baby","Diabetes found only in newborns","A type of infectious disease","A permanent inability to make DNA"],0,"Gestational diabetes is diabetes diagnosed during pregnancy and is associated with increased later health risks."],
+["Ch. 3 — Fat Structure","Which statement correctly compares saturated and unsaturated fatty acids?",["Saturated have no C=C bonds; unsaturated have one or more C=C bonds","Saturated always have more double bonds","Unsaturated contain no carbon","They are identical"],0,"The defining structural difference is the presence or absence of carbon-carbon double bonds."],
+["Ch. 3 — Fat Structure","What is the difference between monounsaturated and polyunsaturated fatty acids?",["Mono has one C=C double bond; poly has two or more","Mono has none; poly has one","Mono has two; poly has zero","There is no difference"],0,"The names indicate the number of carbon-carbon double bonds."],
+["Ch. 3 — Drawing/Recognition","Which description best matches a cis unsaturated fatty acid?",["The carbon chain bends at the double bond because the relevant groups are on the same side","The chain is always completely straight","It contains no double bond","It must be saturated"],0,"Cis geometry typically creates a kink in the fatty acid chain."],
+["Ch. 3 — Drawing/Recognition","Which description best matches a trans unsaturated fatty acid?",["The chain is more linear around the double bond because substituents are on opposite sides","It has no double bond","It is a carbohydrate","It must have three double bonds"],0,"Trans geometry makes the chain more linear than a comparable cis configuration."]
+];
+
+let round=[],i=0,score=0,missed=[],answered=false;
+const $=id=>document.getElementById(id);
+function shuffle(a){for(let x=a.length-1;x>0;x--){let y=Math.floor(Math.random()*(x+1));[a[x],a[y]]=[a[y],a[x]]}return a}
+function startRound(){
+  round=shuffle([...Q]);
+  // Include saved Latin terms if present, replacing a few questions so they get tested.
+  const latin=localStorage.getItem("apbioLatin");
+  if(latin){
+    const terms=latin.split(/\n/).map(x=>x.trim()).filter(Boolean).slice(0,40);
+    const latinQs=terms.map((line,n)=>{
+      const parts=line.split("—");
+      const term=(parts[0]||line).trim(), meaning=(parts.slice(1).join("—")||"").trim();
+      if(!meaning)return null;
+      return ["Latin Terms",`What is the meaning of Latin term #${n+1}: ${term}?`,[meaning,"None of these","The opposite meaning","Not applicable"],0,`Your saved handout says: ${meaning}`];
+    }).filter(Boolean);
+    round=shuffle([...round.slice(0,Math.max(0,30-latinQs.length)),...latinQs]);
+  }
+  round=round.slice(0,30);i=0;score=0;missed=[];answered=false;
+  $("quiz").style.display="block";$("results").style.display="none";render();
+}
+function render(){
+  const item=round[i];$("meta").textContent=`${item[0]}  •  Question ${i+1} of ${round.length}`;
+  $("q").textContent=item[1];$("score").textContent=`Score: ${score}/${i}`;
+  $("bar").style.width=`${i/round.length*100}%`;
+  const box=$("choices");box.innerHTML="";
+  shuffle(item[2].map((v,k)=>({v,k}))).forEach(obj=>{
+    const b=document.createElement("button");b.className="choice";b.textContent=String.fromCharCode(65+box.children.length)+". "+obj.v;
+    b.dataset.correct=(obj.k===item[3]);b.onclick=()=>answer(b,obj.k===item[3]);box.appendChild(b);
+  });
+  $("feedback").className="feedback";$("feedback").textContent="";
+  $("next").disabled=true;answered=false;
+}
+function answer(button,correct){
+  if(answered)return;answered=true;
+  document.querySelectorAll(".choice").forEach(b=>{b.disabled=true;if(b.dataset.correct==="true")b.classList.add("correct")});
+  if(correct){score++;$("feedback").className="feedback show good";$("feedback").textContent="Correct! "+round[i][4]}
+  else{button.classList.add("wrong");$("feedback").className="feedback show bad";$("feedback").textContent="Not quite. "+round[i][4];missed.push(round[i])}
+  $("score").textContent=`Score: ${score}/${i+1}`;$("next").disabled=false;
+}
+$("next").onclick=()=>{if(!answered)return;i++;if(i>=round.length)finish();else render()};
+function finish(){
+  $("quiz").style.display="none";$("results").style.display="block";
+  $("final").textContent=`${score}/${round.length} (${Math.round(score/round.length*100)}%)`;
+  $("message").textContent=score===round.length?"Perfect round!":score>=24?"Excellent work.":"Keep practicing — start another round and target the missed concepts.";
+  $("review").innerHTML=missed.length?`<h3>Review these:</h3>`+missed.map(x=>`<div class="reviewitem"><strong>${x[0]} — ${x[1]}</strong><span class="wronglabel">Review:</span> ${x[4]}</div>`).join(""):"<h3>No missed questions this round.</h3>";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function saveLatin(){
+  localStorage.setItem("apbioLatin",$("latin").value);
+  $("saved").textContent="Saved on this device. Start a new round to use the terms.";
+}
+$("latin").value=localStorage.getItem("apbioLatin")||"";
+startRound();
+</script>
+</body>
+</html>
